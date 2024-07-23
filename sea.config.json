@@ -1,0 +1,8 @@
+{
+  "assets": {
+    "node-sqlite3-wasm.wasm": "node_modules/node-sqlite3-wasm/dist/node-sqlite3-wasm.wasm"
+  },
+  "disableExperimentalSEAWarning": true,
+  "main": "build/sea/index.cjs",
+  "output": "build/sea/prep.blob"
+}

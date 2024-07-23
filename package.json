@@ -1,0 +1,62 @@
+{
+  "name": "npm-packages-data-cache",
+  "version": "0.0.0",
+  "description": "Fetches the latest data from npm registry",
+  "keywords": [
+    "cli",
+    "npm",
+    "version",
+    "versions"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cinnabar-forge/npm-packages-data-cache"
+  },
+  "license": "ISC",
+  "author": {
+    "name": "Timur Moziev",
+    "email": "timur.moziev@gmail.com",
+    "url": "https://timurrin.github.io"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {},
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "scripts": {
+    "build": "node esbuild.js",
+    "build:dev": "tsc",
+    "build:sea": "node sea.build.js",
+    "dev": "tsc-watch",
+    "fix": "prettier . --write && eslint --fix .",
+    "format": "prettier . --write",
+    "lint": "eslint --fix .",
+    "test": "prettier . -c && eslint --max-warnings 0 . && tsc && mocha './build/dev/test'"
+  },
+  "dependencies": {
+    "clivo": "0.5.1",
+    "node-sqlite3-wasm": "0.8.18"
+  },
+  "devDependencies": {
+    "@cinnabar-forge/eslint-plugin": "0.6.1",
+    "@cinnabar-forge/meta": "0.2.0",
+    "@types/chai": "4.3.16",
+    "@types/mocha": "10.0.7",
+    "@types/node": "20.14.11",
+    "chai": "5.1.1",
+    "esbuild": "0.23.0",
+    "mocha": "10.7.0",
+    "pre-commit": "1.2.2",
+    "tsc-watch": "6.2.0",
+    "typescript": "5.5.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "pre-commit": [
+    "test"
+  ]
+}
