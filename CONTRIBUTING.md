@@ -14,3 +14,9 @@ Then, run the following commands to install the dependencies and run the tests:
 npm ci
 npm test
 ```
+
+## Authors
+
+### Maintainers
+
+- Timur Moziev ([@TimurRin](https://github.com/TimurRin))

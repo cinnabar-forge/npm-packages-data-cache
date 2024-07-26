@@ -16,6 +16,10 @@ npm install -g npm-packages-data-cache
 
 Visit [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
+Current maintainers:
+
+- Timur Moziev ([@TimurRin](https://github.com/TimurRin))
+
 ## License
 
 Visit [`LICENSE`](LICENSE).
