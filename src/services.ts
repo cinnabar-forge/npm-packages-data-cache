@@ -2,28 +2,13 @@ import https from "https";
 import nodeSqlite3WasmPkg from "node-sqlite3-wasm";
 const { Database } = nodeSqlite3WasmPkg;
 import { EventEmitter } from "events";
-import fs from "fs";
-import os from "os";
 import packageNameRegex from "package-name-regex";
-import path from "path";
+
+import { getDbPath } from "./database.js";
 
 const CACHE_TIME = 3600000;
 const MINIMUM_UPDATE_INTERVAL = 3000;
 const updateEmitter = new EventEmitter();
-
-/**
- * Returns the path to the SQLite database file
- */
-function getDbPath() {
-  const dbDir = path.join(
-    os.homedir(),
-    ".cache",
-    "cinnabar-forge",
-    "npm-packages-data-cache",
-  );
-  fs.mkdirSync(dbDir, { recursive: true });
-  return path.join(dbDir, "npm_cache.sqlite");
-}
 
 /**
  * Fetches the latest version of a package from the npm registry
@@ -46,12 +31,6 @@ export async function fetchNpmPackageVersion(
   const db = new Database(getDbPath());
 
   try {
-    db.run(`CREATE TABLE IF NOT EXISTS npm_cache (
-      package_name TEXT PRIMARY KEY,
-      version TEXT,
-      cached_at INTEGER
-    )`);
-
     const cachedVersion: nodeSqlite3WasmPkg.QueryResult | null = db.get(
       `SELECT version FROM npm_cache WHERE package_name = ? AND cached_at > ?`,
       [packageName, Date.now() - CACHE_TIME],
