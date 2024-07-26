@@ -1,20 +1,38 @@
 import https from "https";
 import nodeSqlite3WasmPkg from "node-sqlite3-wasm";
 const { Database } = nodeSqlite3WasmPkg;
+import { EventEmitter } from "events";
 import fs from "fs";
 import os from "os";
 import packageNameRegex from "package-name-regex";
 import path from "path";
 
-// Cache time in ms
-const CACHE_TIME = 86400000;
+const CACHE_TIME = 3600000;
+const MINIMUM_UPDATE_INTERVAL = 3000;
+const updateEmitter = new EventEmitter();
+
+/**
+ * Returns the path to the SQLite database file
+ */
+function getDbPath() {
+  const dbDir = path.join(
+    os.homedir(),
+    ".cache",
+    "cinnabar-forge",
+    "npm-packages-data-cache",
+  );
+  fs.mkdirSync(dbDir, { recursive: true });
+  return path.join(dbDir, "npm_cache.sqlite");
+}
 
 /**
  * Fetches the latest version of a package from the npm registry
  * @param packageName
+ * @param source
  */
 export async function fetchNpmPackageVersion(
   packageName: string,
+  source: string,
 ): Promise<string> {
   if (
     !packageName ||
@@ -23,18 +41,9 @@ export async function fetchNpmPackageVersion(
   ) {
     throw new Error("Invalid package format");
   }
-  console.log(`fetching info from npm registry on '${packageName}'...`);
-  const homeDir = os.homedir();
-  const dbDir = path.join(
-    homeDir,
-    ".cache",
-    "cinnabar-forge",
-    "npm-packages-data-cache",
-  );
-  fs.mkdirSync(dbDir, { recursive: true });
-  const dbPath = path.join(dbDir, "npm_cache.sqlite");
+  console.log(`'${source}' requested package '${packageName}'...`);
 
-  const db = new Database(dbPath);
+  const db = new Database(getDbPath());
 
   try {
     db.run(`CREATE TABLE IF NOT EXISTS npm_cache (
@@ -99,4 +108,44 @@ export async function fetchNpmPackageVersion(
   } finally {
     db.close();
   }
+}
+
+/**
+ * Updates the oldest package in the cache
+ * @param db
+ */
+async function updateOldestPackage(
+  db: nodeSqlite3WasmPkg.Database,
+): Promise<void> {
+  try {
+    const oldestPackage: nodeSqlite3WasmPkg.QueryResult | null = db.get(
+      `SELECT package_name, cached_at FROM npm_cache ORDER BY cached_at ASC LIMIT 1`,
+    );
+
+    if (oldestPackage && oldestPackage.package_name) {
+      const packageName = oldestPackage.package_name as string;
+      const cachedAt = oldestPackage.cached_at as number;
+
+      if (Date.now() - cachedAt > CACHE_TIME) {
+        await fetchNpmPackageVersion(packageName, "updateOldestPackage");
+      }
+    }
+
+    setTimeout(() => updateEmitter.emit("update"), MINIMUM_UPDATE_INTERVAL);
+  } catch (error) {
+    console.error("Error updating oldest package:", error);
+    setTimeout(() => updateEmitter.emit("update"), MINIMUM_UPDATE_INTERVAL);
+  }
+}
+
+/**
+ * Starts the continuous update process
+ */
+export function startContinuousUpdates(): void {
+  updateEmitter.on("update", () => {
+    const db = new Database(getDbPath());
+    updateOldestPackage(db).finally(() => db.close());
+  });
+
+  updateEmitter.emit("update");
 }

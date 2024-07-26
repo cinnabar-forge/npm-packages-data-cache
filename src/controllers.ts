@@ -40,7 +40,10 @@ export async function control(req: http.IncomingMessage, res: BassaResponse) {
   for (const packageName of packageList) {
     if (packageName.length > 0) {
       try {
-        versions[packageName] = await fetchNpmPackageVersion(packageName);
+        versions[packageName] = await fetchNpmPackageVersion(
+          packageName,
+          "api",
+        );
       } catch {
         return handleInvalidRequest(res, 400, "Invalid package name");
       }
