@@ -8,6 +8,13 @@ Visit the link above to see all unreleased changes.
 
 [comment]: # (Insert new version after this line)
 
+## [0.1.1](https://github.com/cinnabar-forge/npm-packages-data-cache/releases/tag/v0.1.1) — 2024-07-26
+
+- fix package.json ([b137c73])
+
+[b137c73]: https://github.com/cinnabar-forge/npm-packages-data-cache/commit/b137c73
+
+
 ## [0.1.0](https://github.com/cinnabar-forge/npm-packages-data-cache/releases/tag/v0.1.0) — 2024-07-26
 
 - add PORT environment variable ([63b295d])
@@ -29,4 +36,4 @@ Visit the link above to see all unreleased changes.
 [cb6b277]: https://github.com/cinnabar-forge/npm-packages-data-cache/commit/cb6b277
 
 
-[unreleased]: https://github.com/cinnabar-forge/npm-packages-data-cache/compare/v0.1.0...HEAD
+[unreleased]: https://github.com/cinnabar-forge/npm-packages-data-cache/compare/v0.1.1...HEAD
