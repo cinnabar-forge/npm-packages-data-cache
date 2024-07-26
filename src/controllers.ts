@@ -2,10 +2,10 @@ import http from "http";
 
 import { fetchNpmPackageVersion } from "./services.js";
 
-class BassaResponse extends http.ServerResponse {
+type BassaResponse = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   locals?: Map<string, any>;
-}
+} & http.ServerResponse;
 
 /**
  * Handle incoming requests
@@ -17,16 +17,20 @@ export async function control(req: http.IncomingMessage, res: BassaResponse) {
     res.locals = new Map();
   }
   res.locals?.set("tick", Date.now());
-  console.log(res.locals);
   if (req.method !== "GET" || req.url == null) {
-    return handleInvalidRequest(res);
+    return handleInvalidRequest(res, 404, "Not found");
   }
   const requestUrl = new URL(req.url, `http://${req.headers.host}`);
   const pathname = requestUrl.pathname;
+
+  if (pathname !== "/versions") {
+    return handleInvalidRequest(res, 404, "Not found");
+  }
+
   const packages = requestUrl.searchParams.get("packages");
 
-  if (packages == null || pathname !== "/versions") {
-    return handleInvalidRequest(res);
+  if (packages == null) {
+    return handleInvalidRequest(res, 400, "No packages specified");
   }
 
   const packageList = packages.split(",");
@@ -35,7 +39,11 @@ export async function control(req: http.IncomingMessage, res: BassaResponse) {
 
   for (const packageName of packageList) {
     if (packageName.length > 0) {
-      versions[packageName] = await fetchNpmPackageVersion(packageName);
+      try {
+        versions[packageName] = await fetchNpmPackageVersion(packageName);
+      } catch {
+        return handleInvalidRequest(res, 400, "Invalid package name");
+      }
     }
   }
 
@@ -51,12 +59,18 @@ export async function control(req: http.IncomingMessage, res: BassaResponse) {
 /**
  * Handle invalid request
  * @param res
+ * @param statusCode
+ * @param message
  */
-function handleInvalidRequest(res: BassaResponse) {
-  res.writeHead(400, { "Content-Type": "application/json" });
+function handleInvalidRequest(
+  res: BassaResponse,
+  statusCode?: number,
+  message?: string,
+) {
+  res.writeHead(statusCode || 500, { "Content-Type": "application/json" });
   res.end(
     JSON.stringify({
-      error: "Invalid request",
+      error: message || "Unknown error",
       tick: getTick(res),
     }),
   );

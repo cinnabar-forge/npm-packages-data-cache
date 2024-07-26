@@ -3,6 +3,7 @@ import nodeSqlite3WasmPkg from "node-sqlite3-wasm";
 const { Database } = nodeSqlite3WasmPkg;
 import fs from "fs";
 import os from "os";
+import packageNameRegex from "package-name-regex";
 import path from "path";
 
 // Cache time in ms
@@ -15,7 +16,14 @@ const CACHE_TIME = 86400000;
 export async function fetchNpmPackageVersion(
   packageName: string,
 ): Promise<string> {
-  console.log("fetching info from npm registry on", packageName);
+  if (
+    !packageName ||
+    packageName.length > 214 ||
+    !packageNameRegex.test(packageName)
+  ) {
+    throw new Error("Invalid package format");
+  }
+  console.log(`fetching info from npm registry on '${packageName}'...`);
   const homeDir = os.homedir();
   const dbDir = path.join(
     homeDir,
@@ -40,9 +48,8 @@ export async function fetchNpmPackageVersion(
       [packageName, Date.now() - CACHE_TIME],
     );
 
-    console.log("fetchNpmPackageVersion", cachedVersion);
-
-    if (cachedVersion != null) {
+    if (cachedVersion != null && cachedVersion.version != null) {
+      console.log(`...cached info '${packageName}@${cachedVersion.version}'`);
       return cachedVersion.version as string;
     }
 
@@ -66,6 +73,9 @@ export async function fetchNpmPackageVersion(
           response.on("end", () => {
             try {
               const parsedData = JSON.parse(data);
+              console.log(
+                `...fetched info '${packageName}@${parsedData.version}'`,
+              );
               resolve(parsedData.version);
             } catch (e) {
               reject(new Error("Error parsing JSON response"));
