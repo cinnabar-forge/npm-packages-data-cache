@@ -38,14 +38,15 @@
   },
   "dependencies": {
     "clivo": "0.5.1",
-    "node-sqlite3-wasm": "0.8.18"
+    "node-sqlite3-wasm": "0.8.19",
+    "package-name-regex": "4.0.0"
   },
   "devDependencies": {
     "@cinnabar-forge/eslint-plugin": "0.6.1",
-    "@cinnabar-forge/meta": "0.2.0",
+    "@cinnabar-forge/meta": "0.3.1",
     "@types/chai": "4.3.16",
     "@types/mocha": "10.0.7",
-    "@types/node": "20.14.11",
+    "@types/node": "20.14.12",
     "chai": "5.1.1",
     "esbuild": "0.23.0",
     "mocha": "10.7.0",
