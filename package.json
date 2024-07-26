@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "clivo": "0.5.1",
+    "migratta": "0.4.1",
     "node-sqlite3-wasm": "0.8.19",
     "package-name-regex": "4.0.0"
   },
