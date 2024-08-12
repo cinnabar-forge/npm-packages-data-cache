@@ -5,10 +5,29 @@ import { EventEmitter } from "events";
 import packageNameRegex from "package-name-regex";
 
 import { getDbPath } from "./database.js";
+import { generateStaticSiteHtml } from "./list.js";
+import { PackageInfo } from "./types.js";
 
 const CACHE_TIME = 3600000;
 const MINIMUM_UPDATE_INTERVAL = 3000;
 const updateEmitter = new EventEmitter();
+
+let htmlUpdateAwaited = true;
+
+/**
+ * Returns whether an HTML update is awaited
+ */
+export function getHtmlUpdateAwaited() {
+  return htmlUpdateAwaited;
+}
+
+/**
+ * Sets whether an HTML update is awaited
+ * @param value
+ */
+export function setHtmlUpdateAwaited(value: boolean) {
+  htmlUpdateAwaited = value;
+}
 
 /**
  * Fetches the latest version of a package from the npm registry
@@ -65,6 +84,7 @@ export async function fetchNpmPackageVersion(
                 `...fetched info '${packageName}@${parsedData.version}'`,
               );
               resolve(parsedData.version);
+              setHtmlUpdateAwaited(true);
             } catch (e) {
               reject(new Error("Error parsing JSON response"));
             }
@@ -127,4 +147,22 @@ export function startContinuousUpdates(): void {
   });
 
   updateEmitter.emit("update");
+}
+
+/**
+ *
+ */
+export function generateStaticSite(): void {
+  console.log("Generating static site...");
+  try {
+    const db = new Database(getDbPath());
+    const list = db.all(
+      `SELECT package_name as package, version, cached_at as lastCheck FROM npm_cache ORDER BY package_name ASC;`,
+    );
+
+    generateStaticSiteHtml(list as PackageInfo[]);
+    console.log("Static site generated successfully");
+  } catch (error) {
+    console.error("Error generating static site:", error);
+  }
 }

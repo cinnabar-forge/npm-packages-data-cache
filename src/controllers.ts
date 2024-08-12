@@ -1,6 +1,13 @@
+import fs from "fs";
 import http from "http";
+import path from "path";
 
-import { fetchNpmPackageVersion } from "./services.js";
+import {
+  fetchNpmPackageVersion,
+  generateStaticSite,
+  getHtmlUpdateAwaited,
+  setHtmlUpdateAwaited,
+} from "./services.js";
 
 type BassaResponse = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +30,16 @@ export async function control(req: http.IncomingMessage, res: BassaResponse) {
   const requestUrl = new URL(req.url, `http://${req.headers.host}`);
   const pathname = requestUrl.pathname;
 
+  if (pathname === "/") {
+    if (getHtmlUpdateAwaited()) {
+      generateStaticSite();
+      setHtmlUpdateAwaited(false);
+    }
+
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.end(fs.readFileSync(path.resolve("./tmp/index.html")));
+    return;
+  }
   if (pathname !== "/versions") {
     return handleInvalidRequest(res, 404, "Not found");
   }
