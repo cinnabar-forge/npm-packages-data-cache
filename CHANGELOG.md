@@ -8,6 +8,19 @@ Visit the link above to see all unreleased changes.
 
 [comment]: # (Insert new version after this line)
 
+## [0.2.0](https://github.com/cinnabar-forge/npm-packages-data-cache/releases/tag/v0.2.0) — 2024-08-12
+
+Added index page (table with package versions) on the root route
+
+Full list:
+
+- add html generation on index route ([7a6e520])
+- comply anca ([f12c9ab])
+
+[7a6e520]: https://github.com/cinnabar-forge/npm-packages-data-cache/commit/7a6e520
+[f12c9ab]: https://github.com/cinnabar-forge/npm-packages-data-cache/commit/f12c9ab
+
+
 ## [0.1.1](https://github.com/cinnabar-forge/npm-packages-data-cache/releases/tag/v0.1.1) — 2024-07-26
 
 - fix package.json ([b137c73])
@@ -36,4 +49,4 @@ Visit the link above to see all unreleased changes.
 [cb6b277]: https://github.com/cinnabar-forge/npm-packages-data-cache/commit/cb6b277
 
 
-[unreleased]: https://github.com/cinnabar-forge/npm-packages-data-cache/compare/v0.1.1...HEAD
+[unreleased]: https://github.com/cinnabar-forge/npm-packages-data-cache/compare/v0.2.0...HEAD
