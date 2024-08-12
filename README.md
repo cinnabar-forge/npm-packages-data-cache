@@ -1,4 +1,4 @@
-# npm-packages-data-cache
+# NPM Packages Data Cache
 
 > **DISCLAIMER**: This project is not production ready. All versions below 1.0.0 should be considered unstable
 
@@ -16,9 +16,7 @@ npm install -g npm-packages-data-cache
 
 Visit [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
-Current maintainers:
-
-- Timur Moziev ([@TimurRin](https://github.com/TimurRin))
+Current maintainer - Timur Moziev ([@TimurRin](https://github.com/TimurRin))
 
 ## License
 

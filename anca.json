@@ -4,7 +4,8 @@
       "name": "Timur Moziev",
       "github": "TimurRin",
       "email": "timur.moziev@gmail.com",
-      "type": "maintainer",
+      "type": "author",
+      "status": "active",
       "url": "https://timurrin.github.io/"
     }
   ],
@@ -46,6 +47,10 @@
   },
   "development": {
     "readme": {}
+  },
+  "namings": {
+    "npmPackage": "npm-packages-data-cache",
+    "text": "NPM Packages Data Cache"
   },
   "type": "app",
   "stack": "nodejs"
