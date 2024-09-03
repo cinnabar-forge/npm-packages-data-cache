@@ -62,7 +62,7 @@ export async function control(req: http.IncomingMessage, res: BassaResponse) {
           "api",
         );
       } catch {
-        return handleInvalidRequest(res, 400, "Invalid package name");
+        // return handleInvalidRequest(res, 400, "Invalid package name");
       }
     }
   }
