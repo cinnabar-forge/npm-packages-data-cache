@@ -85,7 +85,7 @@ export async function fetchNpmPackageVersion(
               );
               resolve(parsedData.version);
               setHtmlUpdateAwaited(true);
-            } catch (e) {
+            } catch {
               reject(new Error("Error parsing JSON response"));
             }
           });

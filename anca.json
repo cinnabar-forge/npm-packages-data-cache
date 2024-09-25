@@ -46,12 +46,16 @@
     ]
   },
   "development": {
+    "nodejsSeaModules": {
+      "sqlite3": true
+    },
     "readme": {}
   },
   "namings": {
     "npmPackage": "npm-packages-data-cache",
     "text": "NPM Packages Data Cache"
   },
+  "public": true,
   "type": "app",
   "stack": "nodejs"
 }

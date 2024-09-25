@@ -12,6 +12,18 @@ Fetches the latest data from npm registry
 npm install -g npm-packages-data-cache
 ```
 
+### Bundled script
+
+[Get the latest bundled script](https://github.com/cinnabar-forge/npm-packages-data-cache/releases/latest).
+
+This script has everything to run the project without any extra dependencies. You need Node.js binary to run it.
+
+### Binary
+
+[Get the latest binaries](https://github.com/cinnabar-forge/npm-packages-data-cache/releases/latest).
+
+If you want to use the app with a command line, rename it to `new-app` or `new-app.exe` and add the location to `PATH`.
+
 ## Contributing
 
 Visit [`CONTRIBUTING.md`](CONTRIBUTING.md).
