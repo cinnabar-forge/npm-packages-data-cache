@@ -1,13 +1,14 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 
+import { CINNABAR_PROJECT_VERSION } from "./cinnabar.js";
 import { PackageInfo } from "./types.js";
 
 /**
  *
  * @param data
  */
-export function generateStaticSiteHtml(data: PackageInfo[]): void {
+export async function generateStaticSiteHtml(data: PackageInfo[]) {
   const apiHost =
     process.env.API_HOST || `http://localhost:${process.env.PORT || 3000}`;
   const htmlContent = `<!DOCTYPE html>
@@ -41,7 +42,7 @@ export function generateStaticSiteHtml(data: PackageInfo[]): void {
 </head>
 <body>
     <h1>NPM Packages Data Cache</h1>
-    <p>A <a href="https://github.com/cinnabar-forge">Cinnabar Forge</a> project. Host your own <a href="https://github.com/cinnabar-forge/npm-packages-data-cache">copy</a>.</p>
+    <p>Version ${CINNABAR_PROJECT_VERSION}. A <a href="https://github.com/cinnabar-forge">Cinnabar Forge</a> project. Host your own <a href="https://github.com/cinnabar-forge/npm-packages-data-cache">copy</a>.</p>
     <code>API Example: <a href="${apiHost}/versions?packages=clivo,express,svelte">${apiHost}/versions?packages=clivo,express,svelte</a></code>
     <table>
         <thead>
@@ -68,5 +69,5 @@ export function generateStaticSiteHtml(data: PackageInfo[]): void {
 </html>
 `;
 
-  fs.writeFileSync(path.resolve("tmp", "index.html"), htmlContent, "utf8");
+  await fs.writeFile(path.resolve("tmp", "index.html"), htmlContent, "utf8");
 }

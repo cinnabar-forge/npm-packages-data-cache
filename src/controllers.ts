@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 import http from "http";
 import path from "path";
 
@@ -32,12 +32,12 @@ export async function control(req: http.IncomingMessage, res: BassaResponse) {
 
   if (pathname === "/") {
     if (getHtmlUpdateAwaited()) {
-      generateStaticSite();
+      await generateStaticSite();
       setHtmlUpdateAwaited(false);
     }
 
     res.writeHead(200, { "Content-Type": "text/html" });
-    res.end(fs.readFileSync(path.resolve("./tmp/index.html")));
+    res.end(await fs.readFile(path.resolve("./tmp/index.html")));
     return;
   }
   if (pathname !== "/versions") {

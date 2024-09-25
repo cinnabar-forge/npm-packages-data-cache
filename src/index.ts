@@ -5,7 +5,7 @@ import { control } from "./controllers.js";
 import { dbInit } from "./database.js";
 import { startContinuousUpdates } from "./services.js";
 
-dbInit();
+await dbInit();
 
 const server = http.createServer(control);
 

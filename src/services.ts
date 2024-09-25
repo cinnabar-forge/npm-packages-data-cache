@@ -8,8 +8,12 @@ import { getDbPath } from "./database.js";
 import { generateStaticSiteHtml } from "./list.js";
 import { PackageInfo } from "./types.js";
 
-const CACHE_TIME = 3600000;
-const MINIMUM_UPDATE_INTERVAL = 3000;
+const CACHE_TIME = process.env.CACHE_TIME
+  ? parseInt(process.env.CACHE_TIME)
+  : 300000;
+const MINIMUM_UPDATE_INTERVAL = process.env.MINIMUM_UPDATE_INTERVAL
+  ? parseInt(process.env.MINIMUM_UPDATE_INTERVAL)
+  : 500;
 const updateEmitter = new EventEmitter();
 
 let htmlUpdateAwaited = true;
@@ -47,7 +51,7 @@ export async function fetchNpmPackageVersion(
   }
   console.log(`'${source}' requested package '${packageName}'...`);
 
-  const db = new Database(getDbPath());
+  const db = new Database(await getDbPath());
 
   try {
     const cachedVersion: nodeSqlite3WasmPkg.QueryResult | null = db.get(
@@ -140,9 +144,9 @@ async function updateOldestPackage(
 /**
  * Starts the continuous update process
  */
-export function startContinuousUpdates(): void {
-  updateEmitter.on("update", () => {
-    const db = new Database(getDbPath());
+export function startContinuousUpdates() {
+  updateEmitter.on("update", async () => {
+    const db = new Database(await getDbPath());
     updateOldestPackage(db).finally(() => db.close());
   });
 
@@ -152,15 +156,15 @@ export function startContinuousUpdates(): void {
 /**
  *
  */
-export function generateStaticSite(): void {
+export async function generateStaticSite() {
   console.log("Generating static site...");
   try {
-    const db = new Database(getDbPath());
+    const db = new Database(await getDbPath());
     const list = db.all(
       `SELECT package_name as package, version, cached_at as lastCheck FROM npm_cache ORDER BY package_name ASC;`,
     );
 
-    generateStaticSiteHtml(list as PackageInfo[]);
+    await generateStaticSiteHtml(list as PackageInfo[]);
     console.log("Static site generated successfully");
   } catch (error) {
     console.error("Error generating static site:", error);
